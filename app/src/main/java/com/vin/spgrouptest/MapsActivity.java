@@ -17,12 +17,10 @@ import com.vin.spgrouptest.data.RegionMetadata;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import rx.Subscriber;
-
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
-    private DataLoaderHelper dataLoaderHelper;
+    private ApiLoaderHelper apiLoaderHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,8 +32,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mapFragment.getMapAsync(this);
         try {
             ApiClient apiClient = new ApiClient(this, new URL("https://api.data.gov.sg"));
-            dataLoaderHelper = new DataLoaderHelper(apiClient);
-            dataLoaderHelper.fetchPsiReadings();
+            apiLoaderHelper = new ApiLoaderHelper(apiClient);
+            apiLoaderHelper.fetchPsiReadings();
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }
@@ -45,8 +43,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     protected void onResume() {
         super.onResume();
-        if(dataLoaderHelper != null){
-            dataLoaderHelper.getPsiResponsesObs().subscribe(new LoggingSubscriber<PsiResponses>() {
+        if(apiLoaderHelper != null){
+            apiLoaderHelper.getPsiResponsesObs().subscribe(new LoggingSubscriber<PsiResponses>() {
                 @Override
                 public void onNext(PsiResponses psiResponses) {
                     if(psiResponses != null){

@@ -14,27 +14,27 @@ import java.util.List;
 
 import rx.observers.TestSubscriber;
 
-public class DataLoaderHelperTest extends TestCase{
+public class ApiLoaderHelperTest extends TestCase{
 
     private ApiClient mockApiClient;
-    private DataLoaderHelper dataLoaderHelper;
+    private ApiLoaderHelper apiLoaderHelper;
 
     @Override
     protected void setUp() throws Exception {
         super.setUp();
         mockApiClient = Mockito.mock(ApiClient.class);
-        dataLoaderHelper = new DataLoaderHelper(mockApiClient);
+        apiLoaderHelper = new ApiLoaderHelper(mockApiClient);
     }
 
     public void testGetPsiReadings() throws ApiException, InterruptedException {
 
         TestSubscriber<PsiResponses> testSubscriber = new TestSubscriber<>();
-        dataLoaderHelper.getPsiResponsesObs().subscribe(testSubscriber);
+        apiLoaderHelper.getPsiResponsesObs().subscribe(testSubscriber);
         Mockito.when(mockApiClient.getPsiReadings()).thenReturn(TestModels.testPsiResponses);
         List<PsiResponses> expectedOnNext = new ArrayList<>();
         expectedOnNext.add(TestModels.testPsiResponses);
 
-        dataLoaderHelper.fetchPsiReadings();
+        apiLoaderHelper.fetchPsiReadings();
         Thread.sleep(1000);
 
         testSubscriber.assertReceivedOnNext(expectedOnNext);

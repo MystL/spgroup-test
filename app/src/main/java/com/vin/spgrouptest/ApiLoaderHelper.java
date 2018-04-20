@@ -8,13 +8,13 @@ import rx.schedulers.Schedulers;
 import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
 
-public class DataLoaderHelper {
+public class ApiLoaderHelper {
 
     private ApiClient apiClient;
     private BehaviorSubject<PsiResponses> psiResponseSubject;
     private PublishSubject<Boolean> getPsiReadingsSubject;
 
-    public DataLoaderHelper(ApiClient apiClient) {
+    public ApiLoaderHelper(ApiClient apiClient) {
         this.apiClient = apiClient;
         psiResponseSubject = BehaviorSubject.create();
         getPsiReadingsSubject = PublishSubject.create();
