@@ -20,6 +20,30 @@ public class PsiReading {
         this.north = north;
     }
 
+    public double getWest() {
+        return west;
+    }
+
+    public double getNational() {
+        return national;
+    }
+
+    public double getEast() {
+        return east;
+    }
+
+    public double getCentral() {
+        return central;
+    }
+
+    public double getSouth() {
+        return south;
+    }
+
+    public double getNorth() {
+        return north;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
