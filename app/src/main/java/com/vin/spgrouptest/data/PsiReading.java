@@ -4,14 +4,14 @@ import java.util.Objects;
 
 public class PsiReading {
 
-    private int west;
-    private int national;
-    private int east;
-    private int central;
-    private int south;
-    private int north;
+    private double west;
+    private double national;
+    private double east;
+    private double central;
+    private double south;
+    private double north;
 
-    public PsiReading(int west, int national, int east, int central, int south, int north){
+    public PsiReading(double west, double national, double east, double central, double south, double north){
         this.west = west;
         this.national = national;
         this.east = east;

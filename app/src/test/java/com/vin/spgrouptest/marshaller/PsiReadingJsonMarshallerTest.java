@@ -42,7 +42,7 @@ public class PsiReadingJsonMarshallerTest extends TestCase {
 
     public void testToJson() {
         PsiReading psiReading = new PsiReading(13, 13, 7, 4, 11, 9);
-        String expected = "{\"west\":13,\"national\":13,\"east\":7,\"central\":4,\"south\":11,\"north\":9}";
+        String expected = "{\"west\":13.0,\"national\":13.0,\"east\":7.0,\"central\":4.0,\"south\":11.0,\"north\":9.0}";
 
         assertEquals(expected, marshaller.toJson(psiReading));
     }

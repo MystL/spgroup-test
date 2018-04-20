@@ -3,13 +3,16 @@ package com.vin.spgrouptest.data;
 import java.util.Arrays;
 import java.util.Objects;
 
-public class PsiResponses {
+public class PsiResponses implements Validatable{
 
     private RegionMetadata[] region_metadata;
     private PsiItem[] items;
     private ApiInfo api_info;
 
     public PsiResponses(RegionMetadata[] region_metadata, PsiItem[] items, ApiInfo api_info){
+        if(region_metadata == null || items == null){
+            throw new IllegalArgumentException("Cannot init PsiResponse with Null metadata or items");
+        }
         this.region_metadata = region_metadata;
         this.items = items;
         this.api_info = api_info;
@@ -44,5 +47,14 @@ public class PsiResponses {
         result = 31 * result + Arrays.hashCode(region_metadata);
         result = 31 * result + Arrays.hashCode(items);
         return result;
+    }
+
+    @Override
+    public boolean isValid() {
+        if(region_metadata != null && region_metadata.length > 0
+                && items != null && items.length > 0){
+            return true;
+        }
+        return false;
     }
 }

@@ -2,6 +2,7 @@ package com.vin.spgrouptest;
 
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.util.Log;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -9,21 +10,54 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.vin.spgrouptest.api.ApiClient;
+import com.vin.spgrouptest.data.PsiResponses;
+import com.vin.spgrouptest.data.RegionMetadata;
+
+import java.net.MalformedURLException;
+import java.net.URL;
+
+import rx.Subscriber;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
+    private DataLoaderHelper dataLoaderHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
-        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
+//         Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+        try {
+            ApiClient apiClient = new ApiClient(this, new URL("https://api.data.gov.sg"));
+            dataLoaderHelper = new DataLoaderHelper(apiClient);
+            dataLoaderHelper.fetchPsiReadings();
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if(dataLoaderHelper != null){
+            dataLoaderHelper.getPsiResponsesObs().subscribe(new LoggingSubscriber<PsiResponses>() {
+                @Override
+                public void onNext(PsiResponses psiResponses) {
+                    if(psiResponses != null){
+                        for(RegionMetadata metadata : psiResponses.getRegionMetadata()){
+                            Log.i("XXX", metadata.getName());
+                        }
+                    }
+                }
+            });
+        }
+    }
 
     /**
      * Manipulates the map once available.

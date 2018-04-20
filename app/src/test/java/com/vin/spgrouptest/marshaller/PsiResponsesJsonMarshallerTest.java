@@ -151,28 +151,28 @@ public class PsiResponsesJsonMarshallerTest extends TestCase{
                 "\"update_timestamp\":\"2018-04-19T13:06:18+08:00\"," +
                 "\"readings\":{" +
                 "\"o3_sub_index\":{" +
-                "\"west\":22," +
-                "\"national\":22," +
-                "\"east\":10," +
-                "\"central\":7," +
-                "\"south\":14," +
-                "\"north\":12" +
+                "\"west\":22.0," +
+                "\"national\":22.0," +
+                "\"east\":10.0," +
+                "\"central\":7.0," +
+                "\"south\":14.0," +
+                "\"north\":12.0" +
                 "}," +
                 "\"pm10_twenty_four_hourly\":{" +
-                "\"west\":18," +
-                "\"national\":32," +
-                "\"east\":32," +
-                "\"central\":30," +
-                "\"south\":27," +
-                "\"north\":17" +
+                "\"west\":18.0," +
+                "\"national\":32.0," +
+                "\"east\":32.0," +
+                "\"central\":30.0," +
+                "\"south\":27.0," +
+                "\"north\":17.0" +
                 "}," +
                 "\"pm10_sub_index\":{" +
-                "\"west\":18," +
-                "\"national\":32," +
-                "\"east\":32," +
-                "\"central\":30," +
-                "\"south\":27," +
-                "\"north\":17" +
+                "\"west\":18.0," +
+                "\"national\":32.0," +
+                "\"east\":32.0," +
+                "\"central\":30.0," +
+                "\"south\":27.0," +
+                "\"north\":17.0" +
                 "}" +
                 "}" +
                 "}" +
