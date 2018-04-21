@@ -9,6 +9,9 @@ import com.vin.spgrouptest.data.TestModels;
 
 import junit.framework.TestCase;
 
+import org.joda.time.DateTime;
+import org.joda.time.LocalDateTime;
+
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -187,7 +190,7 @@ public class PsiResponsesJsonMarshallerTest extends TestCase{
         readings.put("pm10_twenty_four_hourly", new PsiReading(18,32,32,30,27,17));
         readings.put("pm10_sub_index", new PsiReading(18,32,32,30,27,17));
         PsiResponses responses = new PsiResponses(new RegionMetadata[]{new RegionMetadata("west", TestModels.testLocation1), new RegionMetadata("national", TestModels.testLocation2)},
-                new PsiItem[]{new PsiItem("2018-04-19T13:00:00+08:00","2018-04-19T13:06:18+08:00", readings)},
+                new PsiItem[]{new PsiItem("2018-04-19T13:00:00+08:00", "2018-04-19T13:06:18+08:00", readings)},
                 new ApiInfo("healthy"));
 
         assertEquals(jsonString, marshaller.toJson(responses));
@@ -199,7 +202,7 @@ public class PsiResponsesJsonMarshallerTest extends TestCase{
         readings.put("pm10_twenty_four_hourly", new PsiReading(18,32,32,30,27,17));
         readings.put("pm10_sub_index", new PsiReading(18,32,32,30,27,17));
         PsiResponses expected = new PsiResponses(new RegionMetadata[]{new RegionMetadata("west", TestModels.testLocation1), new RegionMetadata("national", TestModels.testLocation2)},
-                new PsiItem[]{new PsiItem("2018-04-19T13:00:00+08:00","2018-04-19T13:06:18+08:00", readings)},
+                new PsiItem[]{new PsiItem("2018-04-19T13:00:00+08:00", "2018-04-19T13:06:18+08:00", readings)},
                 new ApiInfo("healthy"));
 
         assertEquals(expected, marshaller.fromJson(marshaller.toJson(expected)));

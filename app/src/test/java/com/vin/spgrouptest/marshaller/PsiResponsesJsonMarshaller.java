@@ -9,6 +9,10 @@ public class PsiResponsesJsonMarshaller extends JsonMarshaller<PsiResponses> {
 
     private Gson gson = new Gson();
 
+    public PsiResponsesJsonMarshaller(){
+
+    }
+
     @Override
     public PsiResponses fromJson(String jsongString) throws ConfigParserException {
         try{

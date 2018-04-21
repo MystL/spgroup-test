@@ -1,16 +1,14 @@
 package com.vin.spgrouptest;
 
-import android.test.AndroidTestCase;
-
 import com.vin.spgrouptest.api.ApiClient;
+import com.vin.spgrouptest.data.PsiResponses;
 import com.vin.spgrouptest.data.TestModels;
 import com.vin.spgrouptest.exceptions.ApiException;
 
 import junit.framework.TestCase;
 
+import org.joda.time.LocalDate;
 import org.mockito.Mockito;
-
-import static org.junit.Assert.*;
 
 public class ApiClientTest extends TestCase{
 
@@ -25,16 +23,45 @@ public class ApiClientTest extends TestCase{
     }
 
     public void testGetPsiReadings() throws ApiException {
-        Mockito.when(mockApi.getPsiReadings()).thenReturn(TestModels.testPsiResponses);
+        Mockito.when(mockApi.getLatestPsiReadings()).thenReturn(TestModels.testPsiResponses);
 
-        assertNotNull(client.getPsiReadings());
+        assertNotNull(client.getLatestPsiReadings());
     }
 
     public void testGetPsiReadings_returnNull(){
-        Mockito.when(mockApi.getPsiReadings()).thenReturn(null);
+        Mockito.when(mockApi.getLatestPsiReadings()).thenReturn(null);
         try{
-            client.getPsiReadings();
+            client.getLatestPsiReadings();
             fail("should throw exceptions");
+        }catch (Exception e){
+
+        }
+    }
+
+    public void testGetPsiReadingsForDay_validDate() throws ApiException {
+        String localDate = "2018-04-20";
+        Mockito.when(mockApi.getPsiReadingsForDay(localDate)).thenReturn(TestModels.testPsiResponses3_wholeDay);
+
+        PsiResponses responses = client.getPsiReadingsForDay(localDate);
+        assertNotNull(responses);
+        assertTrue(responses.getItems().length > 2);
+    }
+
+    public void testGetPsiReadingForDay_invalidDateFormat(){
+        String dateString = "2018-04-20T11:00:00+08:00";
+        try{
+            client.getPsiReadingsForDay(dateString);
+            fail("should throw exception");
+        }catch (Exception e){
+
+        }
+    }
+
+    public void testGetPsiReadingForDay_invalidDate() {
+        String localDate = "asdasds";
+        try{
+            client.getPsiReadingsForDay(localDate);
+            fail("should throw exception");
         }catch (Exception e){
 
         }

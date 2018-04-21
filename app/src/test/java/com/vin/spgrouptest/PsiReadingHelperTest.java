@@ -8,6 +8,10 @@ import com.vin.spgrouptest.data.TestModels;
 
 import junit.framework.TestCase;
 
+import org.joda.time.DateTime;
+import org.joda.time.LocalDateTime;
+import org.junit.rules.TestName;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -197,5 +201,32 @@ public class PsiReadingHelperTest extends TestCase{
         RegionReadingInfo expected = new RegionReadingInfo(TestModels.northRegion, northReadings);
 
         assertEquals(expected, helper.getRegionReadingInfoForLocation(Location.NORTH));
+    }
+
+    public void testGetLatestRegionReadings(){
+        PsiReadingHelper helper = new PsiReadingHelper(TestModels.testPsiResponses3_wholeDay);
+
+        DateTime dateTime = new DateTime("2018-04-20T14:30:00+08:00");
+        assertEquals(TestModels.psiItem5, helper.getLatestReadings(dateTime, TestModels.getPsiItems3_wholeDay()));
+    }
+
+    public void testGetRegionReadingsWithMultipleReadings_north(){
+        PsiReadingHelper helper = new PsiReadingHelper(TestModels.testPsiResponses3_wholeDay);
+        DateTime dateTime = new DateTime("2018-04-20T14:30:00+08:00");
+        Map<String, Double> expected = new HashMap<>();
+        expected.put("o3_sub_index", 12.0);
+        expected.put("co_sub_index", 6.0);
+        expected.put("so2_sub_index", 2.0);
+        expected.put("pm10_sub_index", 21.0);
+        expected.put("pm25_sub_index", 52.0);
+        expected.put("no2_one_hour_max", 6.0);
+        expected.put("o3_eight_hour_max", 35.0);
+        expected.put("co_eight_hour_max", 0.59);
+        expected.put("so2_twenty_four_hourly", 5.0);
+        expected.put("psi_twenty_four_hourly", 52.0);
+        expected.put("pm10_twenty_four_hourly", 21.0);
+        expected.put("pm25_twenty_four_hourly", 13.0);
+
+        assertEquals(expected, helper.getPsiReadingsForLocation(dateTime, Location.NORTH));
     }
 }

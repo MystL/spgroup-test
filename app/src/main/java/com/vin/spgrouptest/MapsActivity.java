@@ -2,7 +2,6 @@ package com.vin.spgrouptest;
 
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
-import android.util.Log;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -12,13 +11,13 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.vin.spgrouptest.api.ApiClient;
 import com.vin.spgrouptest.data.PsiResponses;
-import com.vin.spgrouptest.data.RegionMetadata;
 
 import java.net.MalformedURLException;
 import java.net.URL;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
+    private static final String API_ENDPOINT = "https://api.data.gov.sg";
     private GoogleMap mMap;
     private ApiLoaderHelper apiLoaderHelper;
 
@@ -31,9 +30,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
         try {
-            ApiClient apiClient = new ApiClient(this, new URL("https://api.data.gov.sg"));
+            ApiClient apiClient = new ApiClient(this, new URL(API_ENDPOINT));
             apiLoaderHelper = new ApiLoaderHelper(apiClient);
-            apiLoaderHelper.fetchPsiReadings();
+            apiLoaderHelper.fetchLatestPsiReadings();
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }
@@ -44,13 +43,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     protected void onResume() {
         super.onResume();
         if(apiLoaderHelper != null){
-            apiLoaderHelper.getPsiResponsesObs().subscribe(new LoggingSubscriber<PsiResponses>() {
+            apiLoaderHelper.getLatestPsiResponsesObs().subscribe(new LoggingSubscriber<PsiResponses>() {
                 @Override
                 public void onNext(PsiResponses psiResponses) {
                     if(psiResponses != null){
-                        for(RegionMetadata metadata : psiResponses.getRegionMetadata()){
-                            Log.i("XXX", metadata.getName());
-                        }
+                        PsiReadingHelper psiReadingHelper = new PsiReadingHelper(psiResponses);
                     }
                 }
             });

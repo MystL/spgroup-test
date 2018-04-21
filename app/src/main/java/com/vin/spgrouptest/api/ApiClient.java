@@ -7,12 +7,17 @@ import com.squareup.okhttp.OkHttpClient;
 import com.vin.spgrouptest.data.PsiResponses;
 import com.vin.spgrouptest.exceptions.ApiException;
 
+import org.joda.time.LocalDate;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
+
 import java.net.URL;
 import java.util.concurrent.TimeUnit;
 
 import retrofit.RestAdapter;
 import retrofit.client.OkClient;
 import retrofit.http.GET;
+import retrofit.http.Query;
 
 public class ApiClient {
 
@@ -39,9 +44,19 @@ public class ApiClient {
         this.api = api;
     }
 
-    public PsiResponses getPsiReadings() throws ApiException{
+    public PsiResponses getLatestPsiReadings() throws ApiException{
         try{
-            return checkForNull(api.getPsiReadings());
+            return checkForNull(api.getLatestPsiReadings());
+        }catch (Exception e){
+            throw new ApiException(e);
+        }
+    }
+
+    public PsiResponses getPsiReadingsForDay(String date) throws ApiException{
+        try{
+            DateTimeFormatter formatter = DateTimeFormat.forPattern("yyyy-MM-dd");
+            LocalDate localDate = formatter.parseLocalDate(date);
+            return checkForNull(api.getPsiReadingsForDay(localDate.toString("yyyy-MM-dd")));
         }catch (Exception e){
             throw new ApiException(e);
         }
@@ -57,7 +72,10 @@ public class ApiClient {
     public interface Api{
 
         @GET("/v1/environment/psi")
-        PsiResponses getPsiReadings();
+        PsiResponses getLatestPsiReadings();
+
+        @GET("/v1/environment/psi")
+        PsiResponses getPsiReadingsForDay(@Query("date") String date);
 
     }
 }

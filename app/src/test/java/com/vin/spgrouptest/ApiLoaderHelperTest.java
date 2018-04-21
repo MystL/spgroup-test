@@ -29,12 +29,12 @@ public class ApiLoaderHelperTest extends TestCase{
     public void testGetPsiReadings() throws ApiException, InterruptedException {
 
         TestSubscriber<PsiResponses> testSubscriber = new TestSubscriber<>();
-        apiLoaderHelper.getPsiResponsesObs().subscribe(testSubscriber);
-        Mockito.when(mockApiClient.getPsiReadings()).thenReturn(TestModels.testPsiResponses);
+        apiLoaderHelper.getLatestPsiResponsesObs().subscribe(testSubscriber);
+        Mockito.when(mockApiClient.getLatestPsiReadings()).thenReturn(TestModels.testPsiResponses);
         List<PsiResponses> expectedOnNext = new ArrayList<>();
         expectedOnNext.add(TestModels.testPsiResponses);
 
-        apiLoaderHelper.fetchPsiReadings();
+        apiLoaderHelper.fetchLatestPsiReadings();
         Thread.sleep(1000);
 
         testSubscriber.assertReceivedOnNext(expectedOnNext);

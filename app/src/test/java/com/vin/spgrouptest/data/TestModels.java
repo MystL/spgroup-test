@@ -29,7 +29,7 @@ public class TestModels {
 
     public static RegionMetadata regionMetadata1 = new RegionMetadata("west", testLocation1);
     public static RegionMetadata regionMetadata2 = new RegionMetadata("central", testLocation2);
-    public static PsiItem psiItem1 = new PsiItem("timestamp1", "timestamp2", getReadingsMap());
+    public static PsiItem psiItem1 = new PsiItem("2018-04-20T11:00:00+08:00", "2018-04-20T11:06:18+08:00", getReadingsMap());
 
 
     public static Map<String, PsiReading> getReadingsMap(){
@@ -59,6 +59,19 @@ public class TestModels {
     public static PsiReading pm10_twenty_four_hourly = new PsiReading(23,34,25,32,34,20);
     public static PsiReading pm25_twenty_four_hourly = new PsiReading(11,16,11,15,16,12);
 
+    public static PsiReading o3_sub_index1 = new PsiReading(7,12,8,7,6,12);
+    public static PsiReading co_sub_index1 = new PsiReading(7,7,5,5,6,6);
+    public static PsiReading so2_sub_index1 = new PsiReading(4,5,4,4,5,2);
+    public static PsiReading pm10_sub_index1 = new PsiReading(24,35,26,33,35,21);
+    public static PsiReading pm25_sub_index1 = new PsiReading(47,57,47,55,57,52);
+    public static PsiReading no2_one_hour_max1 = new PsiReading(13,19,16,19,9,6);
+    public static PsiReading o3_eight_hour_max1 = new PsiReading(16,26,18,15,13,35);
+    public static PsiReading co_eight_hour_max1 = new PsiReading(0.65,0.65,0.40,0.55,0.51,0.59);
+    public static PsiReading so2_twenty_four_hourly1 = new PsiReading(5,7,5,6,7,5);
+    public static PsiReading psi_twenty_four_hourly1 = new PsiReading(47,57,47,55,57,52);
+    public static PsiReading pm10_twenty_four_hourly1 = new PsiReading(24,35,26,33,35,21);
+    public static PsiReading pm25_twenty_four_hourly1 = new PsiReading(12,17,12,16,17,13);
+
     public static Map<String, PsiReading> getReadingsMap2(){
         Map<String, PsiReading> map = new HashMap<>();
         map.put("o3_sub_index", o3_sub_index);
@@ -76,13 +89,35 @@ public class TestModels {
         return map;
     }
 
+    public static Map<String, PsiReading> getReadingsMap3(){
+        Map<String, PsiReading> map = new HashMap<>();
+        map.put("o3_sub_index", o3_sub_index1);
+        map.put("co_sub_index", co_sub_index1);
+        map.put("so2_sub_index", so2_sub_index1);
+        map.put("pm10_sub_index", pm10_sub_index1);
+        map.put("pm25_sub_index", pm25_sub_index1);
+        map.put("no2_one_hour_max", no2_one_hour_max1);
+        map.put("o3_eight_hour_max", o3_eight_hour_max1);
+        map.put("co_eight_hour_max", co_eight_hour_max1);
+        map.put("so2_twenty_four_hourly", so2_twenty_four_hourly1);
+        map.put("psi_twenty_four_hourly", psi_twenty_four_hourly1);
+        map.put("pm10_twenty_four_hourly", pm10_twenty_four_hourly1);
+        map.put("pm25_twenty_four_hourly", pm25_twenty_four_hourly1);
+        return map;
+    }
+
     public static PsiItem psiItem2 = new PsiItem("2018-04-20T11:00:00+08:00", "2018-04-20T11:06:18+08:00", getReadingsMap2());
+    public static PsiItem psiItem3 = new PsiItem("2018-04-20T12:00:00+08:00", "2018-04-20T12:06:18+08:00", getReadingsMap2());
+    public static PsiItem psiItem4 = new PsiItem("2018-04-20T13:00:00+08:00", "2018-04-20T13:06:18+08:00", getReadingsMap2());
+    public static PsiItem psiItem5 = new PsiItem("2018-04-20T14:00:00+08:00", "2018-04-20T14:06:18+08:00", getReadingsMap3());
     public static PsiItem[] getPsiItems2() {
         return new PsiItem[]{psiItem2};
     }
+    public static PsiItem[] getPsiItems3_wholeDay() { return new PsiItem[]{ psiItem2, psiItem3, psiItem4, psiItem5};}
 
     public static PsiResponses testPsiResponses = new PsiResponses(getRegionMetadatas(), getPsiItems(), new ApiInfo("status"));
     public static PsiResponses testPsiResponses2 = new PsiResponses(getRegionMetadatas2(), getPsiItems2(), new ApiInfo("healthy"));
+    public static PsiResponses testPsiResponses3_wholeDay = new PsiResponses(getRegionMetadatas2(), getPsiItems3_wholeDay(), new ApiInfo("healthy"));
 
 
 }

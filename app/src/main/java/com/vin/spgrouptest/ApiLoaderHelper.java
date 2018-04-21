@@ -11,24 +11,24 @@ import rx.subjects.PublishSubject;
 public class ApiLoaderHelper {
 
     private ApiClient apiClient;
-    private BehaviorSubject<PsiResponses> psiResponseSubject;
-    private PublishSubject<Boolean> getPsiReadingsSubject;
+    private BehaviorSubject<PsiResponses> latestPsiResponseSubject;
+    private PublishSubject<Boolean> getLatestPsiReadingsSubject;
 
     public ApiLoaderHelper(ApiClient apiClient) {
         this.apiClient = apiClient;
-        psiResponseSubject = BehaviorSubject.create();
-        getPsiReadingsSubject = PublishSubject.create();
+        latestPsiResponseSubject = BehaviorSubject.create();
+        getLatestPsiReadingsSubject = PublishSubject.create();
 
-        subscribeToGetPsiReadingsSubject();
+        subscribeToGetLatestPsiReadingsSubject();
     }
 
-    private void subscribeToGetPsiReadingsSubject() {
-        getPsiReadingsSubject.observeOn(Schedulers.newThread()).subscribe(new LoggingSubscriber<Boolean>() {
+    private void subscribeToGetLatestPsiReadingsSubject() {
+        getLatestPsiReadingsSubject.observeOn(Schedulers.newThread()).subscribe(new LoggingSubscriber<Boolean>() {
             @Override
             public void onNext(Boolean aBoolean) {
                 if (aBoolean) {
                     try {
-                        psiResponseSubject.onNext(apiClient.getPsiReadings());
+                        latestPsiResponseSubject.onNext(apiClient.getLatestPsiReadings());
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -37,12 +37,12 @@ public class ApiLoaderHelper {
         });
     }
 
-    public void fetchPsiReadings() {
-        getPsiReadingsSubject.onNext(true);
+    public void fetchLatestPsiReadings() {
+        getLatestPsiReadingsSubject.onNext(true);
     }
 
-    public Observable<PsiResponses> getPsiResponsesObs() {
-        return psiResponseSubject;
+    public Observable<PsiResponses> getLatestPsiResponsesObs() {
+        return latestPsiResponseSubject;
     }
 
 }
