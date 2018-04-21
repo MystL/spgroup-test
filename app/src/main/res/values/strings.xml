@@ -1,4 +1,19 @@
 <resources>
     <string name="app_name">SPGroupTest</string>
     <string name="title_activity_maps">Map</string>
+    <string name="other_air_pollutant_readings_title">Other Air Pollutant Readings</string>
+    <string name="o3_sub_index_title">O3 Index : </string>
+    <string name="co_sub_index_title">CO Index : </string>
+    <string name="so2_sub_index_title">SO2 Index : </string>
+    <string name="pm10_sub_index_title">PM10 Index : </string>
+    <string name="pm25_sub_index_title">PM25 Index : </string>
+    <string name="no2_one_hour_max_title">Highest NO2 Readings In Past 1 Hour : </string>
+    <string name="o3_eight_hour_max_title">Highest O3 Readings In Past 8 Hours : </string>
+    <string name="co_eight_hour_max_title">Highest CO Readings In Past 8 Hours : </string>
+    <string name="so2_twenty_four_hourly">SO2 Readings In 24 Hours : </string>
+    <string name="psi_twenty_four_hourly">PSI Reading</string>
+    <string name="pm10_twenty_four_hourly">PM10 Readings In 24 Hours : </string>
+    <string name="pm25_twenty_four_hourly">PM25 Readings In 24 Hours : </string>
+    <string name="nation_wide_display_title">Nation Wide</string>
+    <string name="update_time_lbl">Last Updated Time : </string>
 </resources>

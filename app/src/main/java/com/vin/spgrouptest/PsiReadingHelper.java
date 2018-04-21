@@ -43,7 +43,7 @@ public class PsiReadingHelper {
         return new RegionMetadata("unknown", new RegionLocation(Double.NaN, Double.NaN));
     }
 
-    public Map<String, Double> getPsiReadingsForLocation(DateTime dateTime, Location location) {
+    public Tuple2<String, Map<String, Double>> getPsiReadingsForLocation(DateTime dateTime, Location location) {
         Map<String, Double> readingsMap = new HashMap<>();
         if (location != null) {
             PsiItem latestItem = getLatestReadings(dateTime, psiResponses.getItems());
@@ -68,15 +68,15 @@ public class PsiReadingHelper {
                         readingsMap.put(ev.getKey(), ev.getValue().getNorth());
                         break;
                     default:
-                        return readingsMap;
+                        return new Tuple2<>(latestItem.getUpdateTimestamp(), readingsMap);
                 }
             }
-
+            return new Tuple2<>(latestItem.getUpdateTimestamp(), readingsMap);
         }
-        return readingsMap;
+        return new Tuple2<>("", readingsMap);
     }
 
-    public Map<String, Double> getPsiReadingsForLocation(Location location) {
+    public Tuple2<String, Map<String, Double>> getPsiReadingsForLocation(Location location) {
         return getPsiReadingsForLocation(DateTime.now(), location);
     }
 

@@ -1,0 +1,240 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <android.support.v7.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        card_view:cardCornerRadius="4dp"
+        card_view:cardElevation="5dp"
+        card_view:cardUseCompatPadding="true"
+        card_view:cardBackgroundColor="@color/SkyBlue">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:padding="2dp">
+
+            <TextView
+                android:id="@+id/lbl_location_display"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Location Display"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:textColor="@color/Black"
+                android:layout_gravity="center_horizontal"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:weightSum="1">
+
+                <RelativeLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.5">
+
+                    <TextView
+                        android:id="@+id/lbl_psi_24_hr_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/psi_twenty_four_hourly"
+                        android:textColor="@color/Black"
+                        android:textStyle="bold"
+                        android:textSize="18sp"
+                        android:layout_centerHorizontal="true"
+                        android:gravity="center"
+                        />
+
+                    <TextView
+                        android:id="@+id/lbl_psi_24_hr_value"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="44sp"
+                        android:textStyle="bold"
+                        android:text="54"
+                        android:layout_centerInParent="true"/>
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.5">
+
+                    <TextView
+                        android:id="@+id/lbl_other_air_pollutants_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/other_air_pollutant_readings_title"
+                        android:textColor="@color/colorAccent"
+                        android:textStyle="bold"
+                        android:textSize="14sp"
+                        android:layout_centerHorizontal="true"
+                        android:gravity="center_horizontal"
+                        />
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:layout_centerInParent="true"
+                        android:layout_below="@id/lbl_other_air_pollutants_title">
+
+                        <RelativeLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content">
+
+                            <TextView
+                                android:id="@+id/lbl_o3_index_title"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/o3_sub_index_title"
+                                android:textColor="@color/Black"
+                                android:textSize="16sp"
+                                android:textStyle="bold"
+                                android:layout_centerVertical="true"/>
+
+                            <TextView
+                                android:id="@+id/lbl_o3_index_value"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_toRightOf="@id/lbl_o3_index_title"
+                                android:text="14"
+                                android:textColor="@color/Black"
+                                android:textSize="14sp"
+                                android:textStyle="normal"
+                                android:layout_centerVertical="true"/>
+
+                        </RelativeLayout>
+
+                        <RelativeLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content">
+
+                            <TextView
+                                android:id="@+id/lbl_co2_index_title"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/co_sub_index_title"
+                                android:textColor="@color/Black"
+                                android:textSize="16sp"
+                                android:textStyle="bold"
+                                android:layout_centerVertical="true"/>
+
+                            <TextView
+                                android:id="@+id/lbl_co2_index_value"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_toRightOf="@id/lbl_co2_index_title"
+                                android:text="14"
+                                android:textColor="@color/Black"
+                                android:textSize="14sp"
+                                android:textStyle="normal"
+                                android:layout_centerVertical="true"/>
+
+                        </RelativeLayout>
+
+                        <RelativeLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content">
+
+                            <TextView
+                                android:id="@+id/lbl_so2_index_title"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/so2_sub_index_title"
+                                android:textColor="@color/Black"
+                                android:textSize="16sp"
+                                android:textStyle="bold"
+                                android:layout_centerVertical="true"/>
+
+                            <TextView
+                                android:id="@+id/lbl_so2_index_value"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_toRightOf="@id/lbl_so2_index_title"
+                                android:text="14"
+                                android:textColor="@color/Black"
+                                android:textSize="14sp"
+                                android:textStyle="normal"
+                                android:layout_centerVertical="true"/>
+
+                        </RelativeLayout>
+
+                        <RelativeLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content">
+
+                            <TextView
+                                android:id="@+id/lbl_pm10_index_title"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/pm10_sub_index_title"
+                                android:textColor="@color/Black"
+                                android:textSize="16sp"
+                                android:textStyle="bold"
+                                android:layout_centerVertical="true"/>
+
+                            <TextView
+                                android:id="@+id/lbl_pm10_index_value"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_toRightOf="@id/lbl_pm10_index_title"
+                                android:text="14"
+                                android:textColor="@color/Black"
+                                android:textSize="14sp"
+                                android:textStyle="normal"
+                                android:layout_centerVertical="true"/>
+
+                        </RelativeLayout>
+
+                        <RelativeLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content">
+
+                            <TextView
+                                android:id="@+id/lbl_pm25_index_title"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/pm25_sub_index_title"
+                                android:textColor="@color/Black"
+                                android:textSize="16sp"
+                                android:textStyle="bold"
+                                android:layout_centerVertical="true"/>
+
+                            <TextView
+                                android:id="@+id/lbl_pm25_index_value"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_toRightOf="@id/lbl_pm25_index_title"
+                                android:text="14"
+                                android:textColor="@color/Black"
+                                android:textSize="14sp"
+                                android:textStyle="normal"
+                                android:layout_centerVertical="true"/>
+
+                        </RelativeLayout>
+                    </LinearLayout>
+                </RelativeLayout>
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/lbl_updated_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:textSize="14sp"
+                android:layout_gravity="start"
+                android:layout_marginTop="8dp"
+                />
+
+        </LinearLayout>
+
+    </android.support.v7.widget.CardView>
+</LinearLayout>

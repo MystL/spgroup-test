@@ -3,4 +3,17 @@
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
+    <color name="Black">#000</color>
+    <color name="BlackTransluscent">#6000</color>
+    <color name="BlackTransluscentLight">#30000000</color>
+    <color name="LightGrey">#808080</color>
+    <color name="DarkGrey">#404040</color>
+    <color name="White">#ffffff</color>
+    <color name="LimeGreen">#80CBC4</color>
+    <color name="RoyalBlue">#4169E1</color>
+    <color name="FacebookBlue">#3b5998</color>
+    <color name="Red">#F00</color>
+    <color name="Green">#0F0</color>
+    <color name="Yellow">#FFFF00</color>
+    <color name="SkyBlue">#87cefa</color>
 </resources>

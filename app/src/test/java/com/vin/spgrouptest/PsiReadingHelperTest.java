@@ -134,71 +134,77 @@ public class PsiReadingHelperTest extends TestCase{
     }
 
     public void testGetReadingsForLocation_west(){
-        assertEquals(westReadings, helper.getPsiReadingsForLocation(Location.WEST));
+        assertEquals(westReadings, helper.getPsiReadingsForLocation(Location.WEST).getB());
     }
 
     public void testGetReadingsForLocation_national(){
-        assertEquals(nationalReadings, helper.getPsiReadingsForLocation(Location.NATIONAL));
+        assertEquals(nationalReadings, helper.getPsiReadingsForLocation(Location.NATIONAL).getB());
     }
 
     public void testGetReadingsForLocation_east(){
-        assertEquals(eastReadings, helper.getPsiReadingsForLocation(Location.EAST));
+        assertEquals(eastReadings, helper.getPsiReadingsForLocation(Location.EAST).getB());
     }
 
     public void testGetReadingsForLocation_central(){
-        assertEquals(centralReadings, helper.getPsiReadingsForLocation(Location.CENTRAL));
+        assertEquals(centralReadings, helper.getPsiReadingsForLocation(Location.CENTRAL).getB());
     }
 
     public void testGetReadingsForLocation_south(){
-        assertEquals(southReadings, helper.getPsiReadingsForLocation(Location.SOUTH));
+        assertEquals(southReadings, helper.getPsiReadingsForLocation(Location.SOUTH).getB());
     }
 
     public void testGetReadingsForLocation_north(){
-        assertEquals(northReadings, helper.getPsiReadingsForLocation(Location.NORTH));
+        assertEquals(northReadings, helper.getPsiReadingsForLocation(Location.NORTH).getB());
     }
 
     public void testGetReadingsForLocation_null(){
-        assertEquals(new HashMap<String, Double>(), helper.getPsiReadingsForLocation(null));
+        assertEquals(new Tuple2<>("",new HashMap<String, Double>()), helper.getPsiReadingsForLocation(null));
     }
 
     public void testGetRegionReadings_null(){
         assertEquals(new RegionReadingInfo(new RegionMetadata("unknown", new RegionLocation(Double.NaN,Double.NaN)),
-                new HashMap<String, Double>()),
+                new Tuple2<String, Map<String, Double>>("", new HashMap<String, Double>())),
                 helper.getRegionReadingInfoForLocation(null));
     }
 
     public void testGetRegionReadings_west(){
-        RegionReadingInfo expected = new RegionReadingInfo(TestModels.westRegion, westReadings);
+        RegionReadingInfo expected = new RegionReadingInfo(TestModels.westRegion,
+                new Tuple2<>("2018-04-20T14:30:00+08:00", westReadings));
 
         assertEquals(expected, helper.getRegionReadingInfoForLocation(Location.WEST));
     }
 
     public void testGetRegionReadings_central(){
-        RegionReadingInfo expected = new RegionReadingInfo(TestModels.centralRegion, centralReadings);
+        RegionReadingInfo expected = new RegionReadingInfo(TestModels.centralRegion,
+                new Tuple2<>("2018-04-20T14:30:00+08:00", centralReadings));
 
         assertEquals(expected, helper.getRegionReadingInfoForLocation(Location.CENTRAL));
     }
 
     public void testGetRegionReadings_south(){
-        RegionReadingInfo expected = new RegionReadingInfo(TestModels.southRegion, southReadings);
+        RegionReadingInfo expected = new RegionReadingInfo(TestModels.southRegion,
+                new Tuple2<>("2018-04-20T14:30:00+08:00",southReadings));
 
         assertEquals(expected, helper.getRegionReadingInfoForLocation(Location.SOUTH));
     }
 
     public void testGetRegionReadings_national(){
-        RegionReadingInfo expected = new RegionReadingInfo(TestModels.nationalRegion, nationalReadings);
+        RegionReadingInfo expected = new RegionReadingInfo(TestModels.nationalRegion,
+                new Tuple2<>("2018-04-20T14:30:00+08:00", nationalReadings));
 
         assertEquals(expected, helper.getRegionReadingInfoForLocation(Location.NATIONAL));
     }
 
     public void testGetRegionReadings_east(){
-        RegionReadingInfo expected = new RegionReadingInfo(TestModels.eastRegion, eastReadings);
+        RegionReadingInfo expected = new RegionReadingInfo(TestModels.eastRegion,
+                new Tuple2<>("2018-04-20T14:30:00+08:00",eastReadings));
 
         assertEquals(expected, helper.getRegionReadingInfoForLocation(Location.EAST));
     }
 
     public void testGetRegionReadings_north(){
-        RegionReadingInfo expected = new RegionReadingInfo(TestModels.northRegion, northReadings);
+        RegionReadingInfo expected = new RegionReadingInfo(TestModels.northRegion,
+                new Tuple2<>("2018-04-20T14:30:00+08:00", northReadings));
 
         assertEquals(expected, helper.getRegionReadingInfoForLocation(Location.NORTH));
     }
@@ -227,6 +233,6 @@ public class PsiReadingHelperTest extends TestCase{
         expected.put("pm10_twenty_four_hourly", 21.0);
         expected.put("pm25_twenty_four_hourly", 13.0);
 
-        assertEquals(expected, helper.getPsiReadingsForLocation(dateTime, Location.NORTH));
+        assertEquals(expected, helper.getPsiReadingsForLocation(dateTime, Location.NORTH).getB());
     }
 }
