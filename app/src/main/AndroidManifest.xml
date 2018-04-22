@@ -38,6 +38,7 @@
         </activity>
 
         <activity android:name=".RegionReadingDetailsActivity"
+            android:launchMode="singleTask"
             android:label="Details"/>
     </application>
 
