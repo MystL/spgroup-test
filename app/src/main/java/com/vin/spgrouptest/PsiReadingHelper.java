@@ -6,11 +6,14 @@ import com.vin.spgrouptest.data.PsiReading;
 import com.vin.spgrouptest.data.PsiResponses;
 import com.vin.spgrouptest.data.RegionLocation;
 import com.vin.spgrouptest.data.RegionMetadata;
+import com.vin.spgrouptest.data.RegionPsiItem;
 import com.vin.spgrouptest.data.RegionReadingInfo;
 
 import org.joda.time.DateTime;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class PsiReadingHelper {
@@ -82,6 +85,42 @@ public class PsiReadingHelper {
 
     public PsiItem getLatestReadings(PsiItem[] items) {
         return getLatestReadings(DateTime.now(), items);
+    }
+
+    public List<RegionPsiItem> getAllDayReadingsForRegion(Location location){
+        List<RegionPsiItem> items = new ArrayList<>();
+        if(location != null){
+            for(PsiItem item : psiResponses.getItems()){
+                Map<String, Double> readings = new HashMap<>();
+                for(Map.Entry<String, PsiReading> ev : item.getReadings().entrySet()){
+                    switch (location){
+                        case CENTRAL:
+                            readings.put(ev.getKey(), ev.getValue().getCentral());
+                            break;
+                        case NORTH:
+                            readings.put(ev.getKey(), ev.getValue().getNorth());
+                            break;
+                        case SOUTH:
+                            readings.put(ev.getKey(), ev.getValue().getSouth());
+                            break;
+                        case EAST:
+                            readings.put(ev.getKey(), ev.getValue().getEast());
+                            break;
+                        case WEST:
+                            readings.put(ev.getKey(), ev.getValue().getWest());
+                            break;
+                        case NATIONAL:
+                            readings.put(ev.getKey(), ev.getValue().getNational());
+                            break;
+                        default:
+                            break;
+
+                    }
+                }
+                items.add(new RegionPsiItem(item.getTimestamp(), item.getUpdateTimestamp(), readings));
+            }
+        }
+        return items;
     }
 
     public PsiItem getLatestReadings(DateTime localDateTime, PsiItem[] items) {

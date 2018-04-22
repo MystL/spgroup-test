@@ -1,8 +1,8 @@
 package com.vin.spgrouptest;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
@@ -32,7 +32,6 @@ import rx.subjects.PublishSubject;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
-    private static final String API_ENDPOINT = "https://api.data.gov.sg";
     private ApiLoaderHelper apiLoaderHelper;
     private View nationPsiDisplayCard;
     private BehaviorSubject<GoogleMap> onMapReadyObs;
@@ -54,7 +53,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
 
         try {
-            ApiClient apiClient = new ApiClient(this, new URL(API_ENDPOINT));
+            ApiClient apiClient = new ApiClient(this, new URL(getResources().getString(R.string.api_endpoint)));
             apiLoaderHelper = new ApiLoaderHelper(apiClient);
             apiLoaderHelper.fetchLatestPsiReadings();
         } catch (MalformedURLException e) {
@@ -83,57 +82,22 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         @Override
                         public void onNext(Tuple2<GoogleMap, PsiResponses> tuple2) {
                             GoogleMap mMap = tuple2.getA();
-                            PsiReadingHelper psiReadingHelper = new PsiReadingHelper(tuple2.getB());
+                            PsiReadingHelper helper = new PsiReadingHelper(tuple2.getB());
 
-                            RegionMetadata westRegion = psiReadingHelper.getRegionMetadataForLocation(Location.WEST);
-                            int westPsiReading = (int) psiReadingHelper.getRegionReadingInfoForLocation(Location.WEST).getPsi24Hourly();
-                            RegionLocation westLocation = westRegion.getLocation();
-                            LatLng westLatLng = new LatLng(westLocation.getLatitude(), westLocation.getLongitude());
-                            MarkerOptions westMarkerOptions = new MarkerOptions();
-                            westMarkerOptions.position(westLatLng).title(westRegion.getName() + " region");
-                            westMarkerOptions.snippet(String.format("%s%s", "PSI : ", westPsiReading));
-
-                            RegionMetadata eastRegion = psiReadingHelper.getRegionMetadataForLocation(Location.EAST);
-                            int eastPsiReading = (int) psiReadingHelper.getRegionReadingInfoForLocation(Location.EAST).getPsi24Hourly();
-                            RegionLocation eastLocation = eastRegion.getLocation();
-                            LatLng eastLatLng = new LatLng(eastLocation.getLatitude(), eastLocation.getLongitude());
-                            MarkerOptions eastMarkerOptions = new MarkerOptions();
-                            eastMarkerOptions.position(eastLatLng).title(eastRegion.getName() + " region");
-                            eastMarkerOptions.snippet(String.format("%s%s", "PSI : ", eastPsiReading));
-
-                            RegionMetadata northRegion = psiReadingHelper.getRegionMetadataForLocation(Location.NORTH);
-                            int northPsiReading = (int) psiReadingHelper.getRegionReadingInfoForLocation(Location.NORTH).getPsi24Hourly();
-                            RegionLocation northLocation = northRegion.getLocation();
-                            LatLng northLatLng = new LatLng(northLocation.getLatitude(), northLocation.getLongitude());
-                            MarkerOptions northMarkerOptions = new MarkerOptions();
-                            northMarkerOptions.position(northLatLng).title(northRegion.getName() + " region");
-                            northMarkerOptions.snippet(String.format("%s%s", "PSI : ", northPsiReading));
-
-                            RegionMetadata southRegion = psiReadingHelper.getRegionMetadataForLocation(Location.SOUTH);
-                            int southPsiReading = (int) psiReadingHelper.getRegionReadingInfoForLocation(Location.SOUTH).getPsi24Hourly();
-                            RegionLocation southLocation = southRegion.getLocation();
-                            LatLng southLatLng = new LatLng(southLocation.getLatitude(), southLocation.getLongitude());
-                            MarkerOptions southMarkerOptions = new MarkerOptions();
-                            southMarkerOptions.position(southLatLng).title(southRegion.getName()  + " region");
-                            southMarkerOptions.snippet(String.format("%s%s", "PSI : ", southPsiReading));
-
-                            RegionMetadata centralRegion = psiReadingHelper.getRegionMetadataForLocation(Location.CENTRAL);
-                            int centralPsiReading = (int) psiReadingHelper.getRegionReadingInfoForLocation(Location.CENTRAL).getPsi24Hourly();
-                            RegionLocation centralLocation = centralRegion.getLocation();
-                            LatLng centralLatLng = new LatLng(centralLocation.getLatitude(), centralLocation.getLongitude());
-                            MarkerOptions centralMarkerOptions = new MarkerOptions();
-                            centralMarkerOptions.position(centralLatLng).title(centralRegion.getName()  + " region");
-                            centralMarkerOptions.snippet(String.format("%s%s", "PSI : ", centralPsiReading));
-
-                            mMap.addMarker(westMarkerOptions);
-                            mMap.addMarker(eastMarkerOptions);
-                            mMap.addMarker(northMarkerOptions);
-                            mMap.addMarker(southMarkerOptions);
-                            mMap.addMarker(centralMarkerOptions);
+                            mMap.addMarker(createMarkerOptions(helper.getRegionMetadataForLocation(Location.WEST),
+                                    helper.getRegionReadingInfoForLocation(Location.WEST)));
+                            mMap.addMarker(createMarkerOptions(helper.getRegionMetadataForLocation(Location.EAST),
+                                    helper.getRegionReadingInfoForLocation(Location.EAST)));
+                            mMap.addMarker(createMarkerOptions(helper.getRegionMetadataForLocation(Location.NORTH),
+                                    helper.getRegionReadingInfoForLocation(Location.NORTH)));
+                            mMap.addMarker(createMarkerOptions(helper.getRegionMetadataForLocation(Location.SOUTH),
+                                    helper.getRegionReadingInfoForLocation(Location.SOUTH)));
+                            mMap.addMarker(createMarkerOptions(helper.getRegionMetadataForLocation(Location.CENTRAL),
+                                    helper.getRegionReadingInfoForLocation(Location.CENTRAL)));
                             mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
                                 @Override
                                 public boolean onMarkerClick(Marker marker) {
-                                    if(!marker.isInfoWindowShown()){
+                                    if (!marker.isInfoWindowShown()) {
                                         marker.showInfoWindow();
                                     }
                                     // to prevent centering of map camera when clicking on marker
@@ -147,6 +111,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                                 }
                             });
 
+                            RegionLocation northLocation = helper.getRegionMetadataForLocation(Location.NORTH).getLocation();
                             LatLng cameraLatLng = new LatLng(northLocation.getLatitude() + 0.01, northLocation.getLongitude());
                             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(cameraLatLng, 10.5f));
                         }
@@ -156,7 +121,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         onInfoWindowClickedSubject.subscribe(new LoggingSubscriber<Marker>() {
             @Override
             public void onNext(Marker marker) {
-                // TODO - load that Region's detail Actiivty if got time
+                Intent intent = new Intent(MapsActivity.this, RegionReadingDetailsActivity.class);
+                intent.putExtra(CommonConstants.SELECTED_LOCATION_KEY, marker.getTitle());
+                startActivity(intent);
             }
         });
     }
@@ -199,7 +166,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 TextView o3Lbl = nationPsiDisplayCard.findViewById(R.id.lbl_o3_index_value);
                 o3Lbl.setText(String.valueOf((int) info.getO3SubIndex()));
 
-                TextView coLbl = nationPsiDisplayCard.findViewById(R.id.lbl_co2_index_value);
+                TextView coLbl = nationPsiDisplayCard.findViewById(R.id.lbl_co_index_value);
                 coLbl.setText(String.valueOf((int) info.getCoSubIndex()));
 
                 TextView so2Lbl = nationPsiDisplayCard.findViewById(R.id.lbl_so2_index_value);
@@ -222,6 +189,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
             }
         });
+    }
 
+    private MarkerOptions createMarkerOptions(RegionMetadata regionMetadata, RegionReadingInfo regionReadingInfo) {
+        int psiReading = (int) regionReadingInfo.getPsi24Hourly();
+        RegionLocation location = regionMetadata.getLocation();
+        LatLng regionLatLng = new LatLng(location.getLatitude(), location.getLongitude());
+        MarkerOptions markerOptions = new MarkerOptions();
+        markerOptions.position(regionLatLng).title(regionMetadata.getName());
+        markerOptions.snippet(String.format("%s%s", "PSI : ", psiReading));
+        return markerOptions;
     }
 }

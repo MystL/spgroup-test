@@ -1,5 +1,6 @@
 package com.vin.spgrouptest.data;
 
+import com.vin.spgrouptest.CommonConstants;
 import com.vin.spgrouptest.Tuple2;
 
 import java.util.HashMap;
@@ -36,51 +37,51 @@ public class RegionReadingInfo implements Validatable{
     }
 
     public double getPsi24Hourly(){
-        return regionReadings.get("psi_twenty_four_hourly");
+        return regionReadings.get(CommonConstants.PSI_24HR_KEY);
     }
 
     public double getO3SubIndex(){
-        return regionReadings.get("o3_sub_index");
+        return regionReadings.get(CommonConstants.O3_INDEX_KEY);
     }
 
     public double getCoSubIndex(){
-        return regionReadings.get("co_sub_index");
+        return regionReadings.get(CommonConstants.CO_INDEX_KEY);
     }
 
     public double getSo2SubIndex(){
-        return regionReadings.get("so2_sub_index");
+        return regionReadings.get(CommonConstants.SO2_INDEX_KEY);
     }
 
     public double getPm10SubIndex(){
-        return regionReadings.get("pm10_sub_index");
+        return regionReadings.get(CommonConstants.PM10_INDEX_KEY);
     }
 
     public double getPm25SubIndex(){
-        return regionReadings.get("pm25_sub_index");
+        return regionReadings.get(CommonConstants.PM25_INDEX_KEY);
     }
 
     public double getNo2OneHour(){
-        return regionReadings.get("no2_one_hour_max");
+        return regionReadings.get(CommonConstants.NO2_1HR_KEY);
     }
 
     public double getO3EightHour(){
-        return regionReadings.get("o3_eight_hour_max");
+        return regionReadings.get(CommonConstants.O3_8HR_KEY);
     }
 
     public double getCoEightHour(){
-        return regionReadings.get("co_eight_hour_max");
+        return regionReadings.get(CommonConstants.CO_8HR_KEY);
     }
 
-    public double getSo2EightHour(){
-        return regionReadings.get("so2_twenty_four_hourly");
+    public double getSo2TwentyFourHour(){
+        return regionReadings.get(CommonConstants.SO2_24HR_KEY);
     }
 
     public double getPm10TwentyFourHour(){
-        return regionReadings.get("pm10_twenty_four_hourly");
+        return regionReadings.get(CommonConstants.PM10_24HR_KEY);
     }
 
     public double getPm25TwentyFourHour(){
-        return regionReadings.get("pm25_twenty_four_hourly");
+        return regionReadings.get(CommonConstants.PM25_24HR_KEY);
     }
 
     @Override

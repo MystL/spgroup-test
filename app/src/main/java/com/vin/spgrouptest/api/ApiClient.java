@@ -58,6 +58,7 @@ public class ApiClient {
             LocalDate localDate = formatter.parseLocalDate(date);
             return checkForNull(api.getPsiReadingsForDay(localDate.toString("yyyy-MM-dd")));
         }catch (Exception e){
+            e.printStackTrace();
             throw new ApiException(e);
         }
     }

@@ -3,6 +3,7 @@ package com.vin.spgrouptest;
 import com.vin.spgrouptest.data.Location;
 import com.vin.spgrouptest.data.RegionLocation;
 import com.vin.spgrouptest.data.RegionMetadata;
+import com.vin.spgrouptest.data.RegionPsiItem;
 import com.vin.spgrouptest.data.RegionReadingInfo;
 import com.vin.spgrouptest.data.TestModels;
 
@@ -12,7 +13,9 @@ import org.joda.time.DateTime;
 import org.joda.time.LocalDateTime;
 import org.junit.rules.TestName;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class PsiReadingHelperTest extends TestCase{
@@ -234,5 +237,57 @@ public class PsiReadingHelperTest extends TestCase{
         expected.put("pm25_twenty_four_hourly", 13.0);
 
         assertEquals(expected, helper.getPsiReadingsForLocation(dateTime, Location.NORTH).getB());
+    }
+
+    public void testGetRegionAllReadings(){
+        PsiReadingHelper helper = new PsiReadingHelper(TestModels.testPsiResponses3_wholeDay);
+        Map<String, Double> allCentralReadings = new HashMap<>();
+        allCentralReadings.put("o3_sub_index", 6.0);
+        allCentralReadings.put("co_sub_index", 4.0);
+        allCentralReadings.put("so2_sub_index", 3.0);
+        allCentralReadings.put("pm10_sub_index", 32.0);
+        allCentralReadings.put("pm25_sub_index", 54.0);
+        allCentralReadings.put("no2_one_hour_max", 18.0);
+        allCentralReadings.put("o3_eight_hour_max", 15.0);
+        allCentralReadings.put("co_eight_hour_max", 0.45);
+        allCentralReadings.put("so2_twenty_four_hourly", 5.0);
+        allCentralReadings.put("psi_twenty_four_hourly", 54.0);
+        allCentralReadings.put("pm10_twenty_four_hourly", 32.0);
+        allCentralReadings.put("pm25_twenty_four_hourly", 15.0);
+
+        Map<String, Double> allCentralReadings2 = new HashMap<>();
+        allCentralReadings2.put("o3_sub_index", 7.0);
+        allCentralReadings2.put("co_sub_index", 5.0);
+        allCentralReadings2.put("so2_sub_index", 4.0);
+        allCentralReadings2.put("pm10_sub_index", 33.0);
+        allCentralReadings2.put("pm25_sub_index", 55.0);
+        allCentralReadings2.put("no2_one_hour_max", 19.0);
+        allCentralReadings2.put("o3_eight_hour_max", 15.0);
+        allCentralReadings2.put("co_eight_hour_max", 0.55);
+        allCentralReadings2.put("so2_twenty_four_hourly", 6.0);
+        allCentralReadings2.put("psi_twenty_four_hourly", 55.0);
+        allCentralReadings2.put("pm10_twenty_four_hourly", 33.0);
+        allCentralReadings2.put("pm25_twenty_four_hourly", 16.0);
+
+        List<RegionPsiItem> expected = new ArrayList<>();
+        expected.add(new RegionPsiItem(TestModels.psiItem2.getTimestamp(), TestModels.psiItem2.getUpdateTimestamp(), allCentralReadings));
+        expected.add(new RegionPsiItem(TestModels.psiItem3.getTimestamp(), TestModels.psiItem3.getUpdateTimestamp(), allCentralReadings));
+        expected.add(new RegionPsiItem(TestModels.psiItem4.getTimestamp(), TestModels.psiItem4.getUpdateTimestamp(), allCentralReadings));
+        expected.add(new RegionPsiItem(TestModels.psiItem5.getTimestamp(), TestModels.psiItem5.getUpdateTimestamp(), allCentralReadings2));
+
+        List<RegionPsiItem> actual = helper.getAllDayReadingsForRegion(Location.CENTRAL);
+        assertEquals(expected.size(), actual.size());
+        assertEquals(expected.get(0).getTimestamp(), actual.get(0).getTimestamp());
+        assertEquals(expected.get(0).getUpdateTimeStamp(), actual.get(0).getUpdateTimeStamp());
+        assertEquals(expected.get(0).getReadings(), actual.get(0).getReadings());
+        assertEquals(expected.get(1), helper.getAllDayReadingsForRegion(Location.CENTRAL).get(1));
+        assertEquals(expected.get(2), helper.getAllDayReadingsForRegion(Location.CENTRAL).get(2));
+        assertEquals(expected.get(3), helper.getAllDayReadingsForRegion(Location.CENTRAL).get(3));
+    }
+
+    public void testGetRegionAllReadings_null(){
+        PsiReadingHelper helper = new PsiReadingHelper(TestModels.testPsiResponses3_wholeDay);
+
+        assertEquals(new ArrayList<RegionPsiItem>(), helper.getAllDayReadingsForRegion(null));
     }
 }

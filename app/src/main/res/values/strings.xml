@@ -1,5 +1,6 @@
 <resources>
     <string name="app_name">SPGroupTest</string>
+    <string name="api_endpoint">https://api.data.gov.sg</string>
     <string name="title_activity_maps">Map</string>
     <string name="other_air_pollutant_readings_title">Other Air Pollutant Readings</string>
     <string name="o3_sub_index_title">O3 Index : </string>
