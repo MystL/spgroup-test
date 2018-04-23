@@ -39,15 +39,33 @@
         android:layout_centerInParent="true"
         android:visibility="visible"/>
 
-    <TextView
-        android:id="@+id/lbl_no_google_play_service"
+    <RelativeLayout
+        android:id="@+id/no_google_play_service_layout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
-        android:gravity="center_horizontal"
-        android:textSize="16sp"
-        android:text="@string/no_google_play_service"
-        android:visibility="gone"/>
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/lbl_no_google_play_service"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:gravity="center_horizontal"
+            android:textSize="16sp"
+            android:text="@string/no_google_play_service"
+            />
+
+        <Button
+            android:id="@+id/btn_update_gps"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/update_play_service_btn_lbl"
+            android:layout_centerHorizontal="true"
+            android:layout_below="@id/lbl_no_google_play_service"
+            />
+
+    </RelativeLayout>
 
 </RelativeLayout>
 
