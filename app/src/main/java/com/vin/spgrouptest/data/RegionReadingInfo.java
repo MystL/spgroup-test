@@ -1,6 +1,6 @@
 package com.vin.spgrouptest.data;
 
-import com.vin.spgrouptest.Tuple2;
+import com.vin.spgrouptest.utils.Tuple2;
 
 import java.util.HashMap;
 import java.util.Map;

@@ -6,12 +6,11 @@ import com.vin.spgrouptest.data.RegionMetadata;
 import com.vin.spgrouptest.data.RegionPsiItem;
 import com.vin.spgrouptest.data.RegionReadingInfo;
 import com.vin.spgrouptest.data.TestModels;
+import com.vin.spgrouptest.utils.Tuple2;
 
 import junit.framework.TestCase;
 
 import org.joda.time.DateTime;
-import org.joda.time.LocalDateTime;
-import org.junit.rules.TestName;
 
 import java.util.ArrayList;
 import java.util.HashMap;

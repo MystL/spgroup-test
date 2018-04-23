@@ -1,13 +1,11 @@
 package com.vin.spgrouptest.data;
 
-import com.vin.spgrouptest.Tuple2;
+import com.vin.spgrouptest.utils.Tuple2;
 
 import junit.framework.TestCase;
 
 import java.util.HashMap;
 import java.util.Map;
-
-import static org.junit.Assert.*;
 
 public class RegionReadingInfoTest extends TestCase{
 

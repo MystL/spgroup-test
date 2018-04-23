@@ -1,4 +1,4 @@
-package com.vin.spgrouptest;
+package com.vin.spgrouptest.utils;
 
 public class Tuple2<A, B> {
     private final A a;

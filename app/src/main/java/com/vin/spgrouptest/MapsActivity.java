@@ -19,6 +19,9 @@ import com.vin.spgrouptest.data.PsiResponses;
 import com.vin.spgrouptest.data.RegionLocation;
 import com.vin.spgrouptest.data.RegionMetadata;
 import com.vin.spgrouptest.data.RegionReadingInfo;
+import com.vin.spgrouptest.utils.ObservablesOps;
+import com.vin.spgrouptest.utils.PairUp;
+import com.vin.spgrouptest.utils.Tuple2;
 
 import org.joda.time.DateTime;
 
@@ -27,6 +30,7 @@ import java.net.URL;
 
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func1;
 import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
 
@@ -36,6 +40,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private View nationPsiDisplayCard;
     private BehaviorSubject<GoogleMap> onMapReadyObs;
     private PublishSubject<Marker> onInfoWindowClickedSubject;
+    private Observable<String> centralCardViewClickedObs;
+    private Observable<String> markerOptionsClickedObs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,6 +49,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         setContentView(R.layout.activity_maps);
         onMapReadyObs = BehaviorSubject.create();
         onInfoWindowClickedSubject = PublishSubject.create();
+        markerOptionsClickedObs = onInfoWindowClickedSubject.map(new Func1<Marker, String>() {
+            @Override
+            public String call(Marker marker) {
+                return marker.getTitle();
+            }
+        });
 
 //         Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
@@ -50,7 +62,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mapFragment.getMapAsync(this);
         nationPsiDisplayCard = findViewById(R.id.national_readings_display);
         nationPsiDisplayCard.setVisibility(View.GONE);
-
+        centralCardViewClickedObs = ObservablesOps.clicks(nationPsiDisplayCard).map(new Func1<View, String>() {
+            @Override
+            public String call(View view) {
+                return Location.NATIONAL.name();
+            }
+        });
 
         try {
             ApiClient apiClient = new ApiClient(this, new URL(getResources().getString(R.string.api_endpoint)));
@@ -118,14 +135,16 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     });
         }
 
-        onInfoWindowClickedSubject.subscribe(new LoggingSubscriber<Marker>() {
+        Observable.merge(markerOptionsClickedObs, centralCardViewClickedObs)
+                .subscribe(new LoggingSubscriber<String>() {
             @Override
-            public void onNext(Marker marker) {
+            public void onNext(String selectedRegionTitle) {
                 Intent intent = new Intent(MapsActivity.this, RegionReadingDetailsActivity.class);
-                intent.putExtra(CommonConstants.SELECTED_LOCATION_KEY, marker.getTitle());
+                intent.putExtra(CommonConstants.SELECTED_LOCATION_KEY, selectedRegionTitle);
                 startActivity(intent);
             }
         });
+
     }
 
     /**

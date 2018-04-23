@@ -63,7 +63,7 @@ public class RegionReadingsListAdapter extends RecyclerView.Adapter<RegionReadin
         holder.getPm25_textview().setText(String.valueOf((int) item.getPm25SubIndex()));
         try {
             DateTime dateTime = new DateTime(item.getUpdateTimeStamp());
-            holder.getTime_textview().setText(String.format("%s%s", context.getResources().getString(R.string.update_time_lbl), dateTime.toString("yyyy-MM-dd HH:mm")));
+            holder.getTime_textview().setText(String.format("%s%s", context.getResources().getString(R.string.update_time_lbl), dateTime.toString("HH:mm")));
         } catch (Exception e) {
             e.printStackTrace();
             holder.getTime_textview().setVisibility(View.GONE);

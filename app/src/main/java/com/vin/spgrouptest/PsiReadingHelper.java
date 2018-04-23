@@ -8,6 +8,7 @@ import com.vin.spgrouptest.data.RegionLocation;
 import com.vin.spgrouptest.data.RegionMetadata;
 import com.vin.spgrouptest.data.RegionPsiItem;
 import com.vin.spgrouptest.data.RegionReadingInfo;
+import com.vin.spgrouptest.utils.Tuple2;
 
 import org.joda.time.DateTime;
 

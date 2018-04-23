@@ -1,4 +1,4 @@
-package com.vin.spgrouptest;
+package com.vin.spgrouptest.utils;
 
 import rx.functions.Func2;
 
