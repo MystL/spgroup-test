@@ -45,7 +45,7 @@ public class ApiLoaderHelperTest extends TestCase{
     public void testGetPsiReadingsForDate() throws ApiException, InterruptedException {
 
         TestSubscriber<PsiResponses> testSubscriber = new TestSubscriber<>();
-        apiLoaderHelper.getLatestPsiResponsesObs().subscribe(testSubscriber);
+        apiLoaderHelper.getPsiReadingsForDateObs().subscribe(testSubscriber);
         Mockito.when(mockApiClient.getPsiReadingsForDay("2018-04-22")).thenReturn(TestModels.testPsiResponses3_wholeDay);
         List<PsiResponses> expected = new ArrayList<>();
         expected.add(TestModels.testPsiResponses3_wholeDay);
