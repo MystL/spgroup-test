@@ -44,7 +44,6 @@ public class RegionReadingDetailsActivity extends AppCompatActivity {
     private View loadingFailMessage;
     private Observable<View> reloadButtonClickedObs;
 
-
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -108,6 +107,7 @@ public class RegionReadingDetailsActivity extends AppCompatActivity {
         reloadButtonClickedObs.subscribe(new LoggingSubscriber<View>() {
             @Override
             public void onNext(View view) {
+                hideErrorDisplay();
                 loadData();
             }
         });
@@ -187,6 +187,5 @@ public class RegionReadingDetailsActivity extends AppCompatActivity {
         loadingFailMessage.setVisibility(View.GONE);
         showLoadingCircle();
     }
-
 
 }

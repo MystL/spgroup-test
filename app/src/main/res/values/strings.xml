@@ -19,4 +19,5 @@
     <string name="update_time_lbl">Last Updated Time : </string>
     <string name="failed_to_load_display_text">Ops! We couldn\'t retrieve any information for now.\nPlease check your device\'s network connection and try again later.</string>
     <string name="refresh_data_text">Refresh Page</string>
+    <string name="no_google_play_service">Your device does not have a proper Google Play Service to run the app. \n Please ensure you have the latest version of Google Play Service in order to run the app.</string>
 </resources>

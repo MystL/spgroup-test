@@ -1,6 +1,7 @@
 package com.vin.spgrouptest;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
@@ -8,7 +9,10 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -39,6 +43,7 @@ import rx.subjects.PublishSubject;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
+    private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
     private SupportMapFragment mapFragment;
     private ApiLoaderHelper apiLoaderHelper;
     private View nationPsiDisplayCard;
@@ -50,11 +55,17 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private ProgressBar loadingCircle;
     private View loadingFailedMsg;
     private Observable<View> reloadBtnClickedObs;
+    private BehaviorSubject<Boolean> googlePlayServicesAvailableSubject;
+    private boolean proceed;
+    private TextView lbl_no_playservice;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
+        googlePlayServicesAvailableSubject = BehaviorSubject.create();
+        checkPlayServices();
+        lbl_no_playservice = findViewById(R.id.lbl_no_google_play_service);
         mapLayout = findViewById(R.id.map_view);
         loadingCircle = findViewById(R.id.map_loading_circle);
         loadingFailedMsg = findViewById(R.id.unable_to_load_map_layout);
@@ -92,7 +103,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     }
 
-    private void loadData(){
+    private void loadData() {
         showLoadingCircle();
         apiLoaderHelper.fetchLatestPsiReadings();
     }
@@ -101,17 +112,30 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     protected void onResume() {
         super.onResume();
         if (apiLoaderHelper != null) {
-            apiLoaderHelper.getLatestPsiResponsesObs().subscribe(new LoggingSubscriber<PsiResponses>() {
-                @Override
-                public void onNext(PsiResponses psiResponses) {
-                    if (psiResponses != null) {
-                        PsiReadingHelper psiReadingHelper = new PsiReadingHelper(psiResponses);
-                        loadNationalReadings(psiReadingHelper.getRegionReadingInfoForLocation(Location.NATIONAL));
-                    } else {
-                        loadErrorMessageLayout();
-                    }
-                }
-            });
+            Observable.combineLatest(googlePlayServicesAvailableSubject.distinctUntilChanged(), apiLoaderHelper.getLatestPsiResponsesObs(),
+                    new PairUp<Boolean, PsiResponses>())
+                    .subscribe(new LoggingSubscriber<Tuple2<Boolean, PsiResponses>>() {
+                        @Override
+                        public void onNext(Tuple2<Boolean, PsiResponses> tuple2) {
+                            boolean hasGPlayServices = tuple2.getA();
+                            PsiResponses psiResponses = tuple2.getB();
+                            if (hasGPlayServices) {
+                                if (psiResponses != null) {
+                                    PsiReadingHelper psiReadingHelper = new PsiReadingHelper(psiResponses);
+                                    loadNationalReadings(psiReadingHelper.getRegionReadingInfoForLocation(Location.NATIONAL));
+                                } else {
+                                    loadErrorMessageLayout();
+                                }
+                            } else {
+                                if(!proceed){
+                                    updateGooglePlayService();
+                                    proceed = true;
+                                }
+
+                            }
+                        }
+                    });
+
 
             Observable.combineLatest(onMapReadyObs, apiLoaderHelper.getLatestPsiResponsesObs()
                     .observeOn(AndroidSchedulers.mainThread()), new PairUp<GoogleMap, PsiResponses>())
@@ -172,6 +196,19 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             @Override
             public void onNext(View view) {
                 loadData();
+            }
+        });
+
+        googlePlayServicesAvailableSubject.subscribe(new LoggingSubscriber<Boolean>() {
+            @Override
+            public void onNext(Boolean aBoolean) {
+                if(!aBoolean){
+                    hideLoadingCircle(false);
+                    Log.i("XXX", "Show??");
+                    lbl_no_playservice.setVisibility(View.VISIBLE);
+                } else {
+                    Log.i("XXX", "Show?????");
+                }
             }
         });
 
@@ -277,5 +314,31 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             nationPsiDisplayCard.setVisibility(View.GONE);
         }
 
+    }
+
+    private void checkPlayServices() {
+        GoogleApiAvailability apiAvailability = GoogleApiAvailability.getInstance();
+        int resultCode = apiAvailability.isGooglePlayServicesAvailable(this);
+        if (resultCode != ConnectionResult.SUCCESS) {
+            if (apiAvailability.isUserResolvableError(resultCode)) {
+                apiAvailability.getErrorDialog(this, resultCode, PLAY_SERVICES_RESOLUTION_REQUEST)
+                        .show();
+            } else {
+                Log.i("XXX", "This device is not supported.");
+                finish();
+            }
+            googlePlayServicesAvailableSubject.onNext(false);
+            return;
+        }
+        googlePlayServicesAvailableSubject.onNext(true);
+    }
+
+    private void updateGooglePlayService(){
+        String LINK_TO_GOOGLE_PLAY_SERVICES = "play.google.com/store/apps/details?id=com.google.android.gms&hl=en";
+        try {
+            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://" + LINK_TO_GOOGLE_PLAY_SERVICES)));
+        } catch (android.content.ActivityNotFoundException anfe) {
+            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://" + LINK_TO_GOOGLE_PLAY_SERVICES)));
+        }
     }
 }
