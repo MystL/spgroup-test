@@ -3,7 +3,10 @@ package com.vin.spgrouptest;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
+import android.util.Log;
 import android.view.View;
+import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -36,17 +39,27 @@ import rx.subjects.PublishSubject;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
+    private SupportMapFragment mapFragment;
     private ApiLoaderHelper apiLoaderHelper;
     private View nationPsiDisplayCard;
     private BehaviorSubject<GoogleMap> onMapReadyObs;
     private PublishSubject<Marker> onInfoWindowClickedSubject;
     private Observable<String> centralCardViewClickedObs;
     private Observable<String> markerOptionsClickedObs;
+    private View mapLayout;
+    private ProgressBar loadingCircle;
+    private View loadingFailedMsg;
+    private Observable<View> reloadBtnClickedObs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
+        mapLayout = findViewById(R.id.map_view);
+        loadingCircle = findViewById(R.id.map_loading_circle);
+        loadingFailedMsg = findViewById(R.id.unable_to_load_map_layout);
+        Button reloadBtn = loadingFailedMsg.findViewById(R.id.btn_reload_data);
+        reloadBtnClickedObs = ObservablesOps.clicks(reloadBtn);
         onMapReadyObs = BehaviorSubject.create();
         onInfoWindowClickedSubject = PublishSubject.create();
         markerOptionsClickedObs = onInfoWindowClickedSubject.map(new Func1<Marker, String>() {
@@ -55,11 +68,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 return marker.getTitle();
             }
         });
-
-//         Obtain the SupportMapFragment and get notified when the map is ready to be used.
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+        mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+
         nationPsiDisplayCard = findViewById(R.id.national_readings_display);
         nationPsiDisplayCard.setVisibility(View.GONE);
         centralCardViewClickedObs = ObservablesOps.clicks(nationPsiDisplayCard).map(new Func1<View, String>() {
@@ -69,14 +81,20 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         });
 
+
         try {
             ApiClient apiClient = new ApiClient(this, new URL(getResources().getString(R.string.api_endpoint)));
             apiLoaderHelper = new ApiLoaderHelper(apiClient);
-            apiLoaderHelper.fetchLatestPsiReadings();
+            loadData();
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }
 
+    }
+
+    private void loadData(){
+        showLoadingCircle();
+        apiLoaderHelper.fetchLatestPsiReadings();
     }
 
     @Override
@@ -89,6 +107,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     if (psiResponses != null) {
                         PsiReadingHelper psiReadingHelper = new PsiReadingHelper(psiResponses);
                         loadNationalReadings(psiReadingHelper.getRegionReadingInfoForLocation(Location.NATIONAL));
+                    } else {
+                        loadErrorMessageLayout();
                     }
                 }
             });
@@ -98,53 +118,73 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     .subscribe(new LoggingSubscriber<Tuple2<GoogleMap, PsiResponses>>() {
                         @Override
                         public void onNext(Tuple2<GoogleMap, PsiResponses> tuple2) {
-                            GoogleMap mMap = tuple2.getA();
-                            PsiReadingHelper helper = new PsiReadingHelper(tuple2.getB());
+                            if (tuple2.getB() != null) {
+                                hideLoadingCircle(true);
+                                GoogleMap mMap = tuple2.getA();
+                                PsiReadingHelper helper = new PsiReadingHelper(tuple2.getB());
 
-                            mMap.addMarker(createMarkerOptions(helper.getRegionMetadataForLocation(Location.WEST),
-                                    helper.getRegionReadingInfoForLocation(Location.WEST)));
-                            mMap.addMarker(createMarkerOptions(helper.getRegionMetadataForLocation(Location.EAST),
-                                    helper.getRegionReadingInfoForLocation(Location.EAST)));
-                            mMap.addMarker(createMarkerOptions(helper.getRegionMetadataForLocation(Location.NORTH),
-                                    helper.getRegionReadingInfoForLocation(Location.NORTH)));
-                            mMap.addMarker(createMarkerOptions(helper.getRegionMetadataForLocation(Location.SOUTH),
-                                    helper.getRegionReadingInfoForLocation(Location.SOUTH)));
-                            mMap.addMarker(createMarkerOptions(helper.getRegionMetadataForLocation(Location.CENTRAL),
-                                    helper.getRegionReadingInfoForLocation(Location.CENTRAL)));
-                            mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
-                                @Override
-                                public boolean onMarkerClick(Marker marker) {
-                                    if (!marker.isInfoWindowShown()) {
-                                        marker.showInfoWindow();
+                                mMap.addMarker(createMarkerOptions(helper.getRegionMetadataForLocation(Location.WEST),
+                                        helper.getRegionReadingInfoForLocation(Location.WEST)));
+                                mMap.addMarker(createMarkerOptions(helper.getRegionMetadataForLocation(Location.EAST),
+                                        helper.getRegionReadingInfoForLocation(Location.EAST)));
+                                mMap.addMarker(createMarkerOptions(helper.getRegionMetadataForLocation(Location.NORTH),
+                                        helper.getRegionReadingInfoForLocation(Location.NORTH)));
+                                mMap.addMarker(createMarkerOptions(helper.getRegionMetadataForLocation(Location.SOUTH),
+                                        helper.getRegionReadingInfoForLocation(Location.SOUTH)));
+                                mMap.addMarker(createMarkerOptions(helper.getRegionMetadataForLocation(Location.CENTRAL),
+                                        helper.getRegionReadingInfoForLocation(Location.CENTRAL)));
+                                mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+                                    @Override
+                                    public boolean onMarkerClick(Marker marker) {
+                                        if (!marker.isInfoWindowShown()) {
+                                            marker.showInfoWindow();
+                                        }
+                                        // to prevent centering of map camera when clicking on marker
+                                        return true;
                                     }
-                                    // to prevent centering of map camera when clicking on marker
-                                    return true;
-                                }
-                            });
-                            mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
-                                @Override
-                                public void onInfoWindowClick(Marker marker) {
-                                    onInfoWindowClickedSubject.onNext(marker);
-                                }
-                            });
+                                });
+                                mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
+                                    @Override
+                                    public void onInfoWindowClick(Marker marker) {
+                                        onInfoWindowClickedSubject.onNext(marker);
+                                    }
+                                });
 
-                            RegionLocation northLocation = helper.getRegionMetadataForLocation(Location.NORTH).getLocation();
-                            LatLng cameraLatLng = new LatLng(northLocation.getLatitude() + 0.01, northLocation.getLongitude());
-                            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(cameraLatLng, 10.5f));
+                                RegionLocation northLocation = helper.getRegionMetadataForLocation(Location.NORTH).getLocation();
+                                LatLng cameraLatLng = new LatLng(northLocation.getLatitude() + 0.01, northLocation.getLongitude());
+                                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(cameraLatLng, 10.5f));
+                            }
                         }
                     });
         }
 
         Observable.merge(markerOptionsClickedObs, centralCardViewClickedObs)
                 .subscribe(new LoggingSubscriber<String>() {
+                    @Override
+                    public void onNext(String selectedRegionTitle) {
+                        Intent intent = new Intent(MapsActivity.this, RegionReadingDetailsActivity.class);
+                        intent.putExtra(CommonConstants.SELECTED_LOCATION_KEY, selectedRegionTitle);
+                        startActivity(intent);
+                    }
+                });
+
+        reloadBtnClickedObs.subscribe(new LoggingSubscriber<View>() {
             @Override
-            public void onNext(String selectedRegionTitle) {
-                Intent intent = new Intent(MapsActivity.this, RegionReadingDetailsActivity.class);
-                intent.putExtra(CommonConstants.SELECTED_LOCATION_KEY, selectedRegionTitle);
-                startActivity(intent);
+            public void onNext(View view) {
+                loadData();
             }
         });
 
+    }
+
+    private void loadErrorMessageLayout() {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                hideLoadingCircle(false);
+                loadingFailedMsg.setVisibility(View.VISIBLE);
+            }
+        });
     }
 
     /**
@@ -218,5 +258,24 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         markerOptions.position(regionLatLng).title(regionMetadata.getName());
         markerOptions.snippet(String.format("%s%s", "PSI : ", psiReading));
         return markerOptions;
+    }
+
+    private void showLoadingCircle() {
+        loadingCircle.setVisibility(View.VISIBLE);
+        mapLayout.setVisibility(View.GONE);
+        nationPsiDisplayCard.setVisibility(View.GONE);
+        loadingFailedMsg.setVisibility(View.GONE);
+    }
+
+    private void hideLoadingCircle(boolean showDataElements) {
+        loadingCircle.setVisibility(View.GONE);
+        if (showDataElements) {
+            mapLayout.setVisibility(View.VISIBLE);
+            nationPsiDisplayCard.setVisibility(View.VISIBLE);
+        } else {
+            mapLayout.setVisibility(View.GONE);
+            nationPsiDisplayCard.setVisibility(View.GONE);
+        }
+
     }
 }

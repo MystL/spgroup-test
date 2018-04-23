@@ -17,4 +17,6 @@
     <string name="pm25_twenty_four_hourly">PM25 Readings In 24 Hours : </string>
     <string name="nation_wide_display_title">Nation Wide</string>
     <string name="update_time_lbl">Last Updated Time : </string>
+    <string name="failed_to_load_display_text">Ops! We couldn\'t retrieve any information for now.\nPlease check your device\'s network connection and try again later.</string>
+    <string name="refresh_data_text">Refresh Page</string>
 </resources>
